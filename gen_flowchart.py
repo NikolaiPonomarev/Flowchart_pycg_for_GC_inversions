@@ -48,12 +48,24 @@ valid_files_set = {
     for f in valid_files
 }
 
+# --- virtual modules (some modules are not python files, so we add them as virtual ones) ---
+VIRTUAL_MODULES = {
+    "oco_feedback": "oco_feedback"
+}
+valid_files_set.update(VIRTUAL_MODULES.values())
+
 def get_file(node):
     if "<builtin>" in node:
         return None
 
     clean = node.split("enkf_oco2_inv_af.")[-1]
-    return clean.split(".")[0]
+    mod = clean.split(".")[0]
+
+    # map virtual module to fake file node
+    if mod in VIRTUAL_MODULES:
+        return VIRTUAL_MODULES[mod]
+
+    return mod
 
 file_edges = set()
 
