@@ -12,13 +12,6 @@ output_file = "graph.png"
 root_dir = "/scratch/local/enkf_oco2_inv_af"
 files = glob.glob(root_dir + "/*.py", recursive=True)
 
-cg = CallGraphGenerator(
-        entry_points=files,
-        package="enkf_oco2_inv_af",
-        max_iter=3,
-        operation=None
-    )
-
 valid_files = []
 invalid_files = []
 
