@@ -50,7 +50,15 @@ valid_files_set = {
 
 # --- virtual modules (some modules are not python files, so we add them as virtual ones) ---
 VIRTUAL_MODULES = {
-    "oco_feedback": "oco_feedback"
+    "oco_feedback": "oco_feedback",
+    "bpch2_rw_v2": "bpch2_rw_v2",
+    "sample_model_em": "sample_model_em",
+    "standard_atmosphere": "standard_atmosphere",
+    "pres_mod_py": "pres_mod_py",
+    "grid_prof": "grid_prof", 
+    "time_module": "time_module",
+    "flib": "flib",
+    "geos_chem_def": "geos_chem_def"
 }
 valid_files_set.update(VIRTUAL_MODULES.values())
 
@@ -68,11 +76,15 @@ def get_file(node):
     return mod
 
 file_edges = set()
-
+all_seen_modules = set()
 for caller, callee in edges:
     f1 = get_file(caller)
     f2 = get_file(callee)
 
+    if f1 is not None:
+        all_seen_modules.add(f1)
+    if f2 is not None:
+        all_seen_modules.add(f2)
     # keep only real project files
     if not f1 or not f2:
         continue
@@ -83,6 +95,11 @@ for caller, callee in edges:
     if f1 != f2:
         file_edges.add((f1, f2))
 
+missing_modules = sorted(all_seen_modules - valid_files_set)
+
+print("\n=== Modules seen in edges but NOT in valid_files_set ===")
+for m in missing_modules:
+    print(m)
 
 # --- build reverse graph distance from entry --
 G = nx.DiGraph()
