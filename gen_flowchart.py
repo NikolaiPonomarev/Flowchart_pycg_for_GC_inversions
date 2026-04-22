@@ -163,7 +163,8 @@ nx.draw_networkx_edges(
     width=1.0,
     edge_color="#666666",
     alpha=0.45,
-    connectionstyle="arc3,rad=0.10"
+    connectionstyle="arc3,rad=0.10",
+    node_size=node_sizes
 )
 
 # --- labels ---
