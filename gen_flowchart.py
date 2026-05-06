@@ -7,6 +7,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import os
 from collections import defaultdict
+import matplotlib.patches as mpatches
 
 output_file = "graph.png"
 root_dir = "/scratch/local/enkf_oco2_inv_af"
@@ -146,19 +147,42 @@ plt.figure(figsize=(12, 8))
 ax = plt.gca()
 ax.set_facecolor("white")
 
+FORTRAN_MODULES = {
+    "oco_feedback",
+    "bpch2_rw_v2",
+    "sample_model_em",
+    "standard_atmosphere",
+    "pres_mod_py",
+    "grid_prof", 
+    "time_module",
+    "flib",
+    "geos_chem_def"
+}
+
 node_sizes = []
 for n in G_plot.nodes():
     base = 1800
     scale = len(n) * 55
     node_sizes.append(base + scale)
 
+node_colors = []
+node_edge_colors = []
+
+for n in G_plot.nodes():
+    if n in FORTRAN_MODULES:
+        node_colors.append("#FF6B6B")      # red fill
+        node_edge_colors.append("#8B0000")  # dark red border
+    else:
+        node_colors.append("#E8F1FF")
+        node_edge_colors.append("#2B4C7E")
+
 # --- nodes ---
 nx.draw_networkx_nodes(
     G_plot,
     pos,
     node_size=node_sizes,
-    node_color="#E8F1FF",
-    edgecolors="#2B4C7E",
+    node_color=node_colors,
+    edgecolors=node_edge_colors,
     linewidths=1.3,
     alpha=0.95
 )
@@ -185,6 +209,11 @@ nx.draw_networkx_labels(
     font_family="sans-serif",
     font_color="#1A1A1A"
 )
+
+python_patch = mpatches.Patch(color="#E8F1FF", label="Python modules")
+fortran_patch = mpatches.Patch(color="#FF6B6B", label="Fortran modules")
+
+plt.legend(handles=[python_patch, fortran_patch], loc="lower left")
 
 plt.title("Inversion pipeline chart", fontsize=11, fontweight="bold")
 plt.axis("off")
